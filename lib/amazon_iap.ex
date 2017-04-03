@@ -47,6 +47,11 @@ defmodule AmazonIAP do
                                 sku: body["sku"],
                                 purchase_token: body["purchaseToken"]
                               }}
+      {:ok, %HTTPoison.Response{status_code: 400}} -> {:error, "The transaction represented by this Purchase Token is no longer valid."}
+      {:ok, %HTTPoison.Response{status_code: 496}} -> {:error, "Invalid sharedSecret."}
+      {:ok, %HTTPoison.Response{status_code: 497}} -> {:error, "Invalid User ID."}
+      {:ok, %HTTPoison.Response{status_code: 498}} -> {:error, "Invalid Purchase Token."}
+      {:ok, %HTTPoison.Response{status_code: 499}} -> {:error, "The Purchase Token was created with credentials that have expired. Use renew to generate a valid purchase token."}
       {:error, error} -> {:error, error.reason}
     end
   end

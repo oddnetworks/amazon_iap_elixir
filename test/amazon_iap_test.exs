@@ -75,4 +75,21 @@ defmodule AmazonIAPTest do
 
     assert validate :hackney
   end
+
+  test "error is returned from amazon" do
+    expect(
+      :hackney, 
+      :request, 
+      [
+        {
+          [:get, "http://example.com/amazon-test/verify/developer/d_1/user/u_1/purchaseToken/p_t_1", [{"accept", "application/json"}], "", []],
+          {:ok, 498, [], :client}
+        }
+      ])
+    expect(:hackney, :body, 1, {:ok, ""})
+
+    assert {:error, "Invalid Purchase Token."} == AmazonIAP.verify_receipt("http://example.com/amazon-test", "d_1", "u_1", "p_t_1")
+
+    assert validate :hackney
+  end
 end
